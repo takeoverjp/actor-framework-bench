@@ -29,3 +29,5 @@ actix has 3 types for controlling concurrency
   - Encapsulates state and behavior
   - Communicates with other `Actor`s by sending and receiving messages
   - Each `Actor` is bound to one and only one `Arbiter`
+
+### [Ractor](https://crates.io/crates/ractor)
