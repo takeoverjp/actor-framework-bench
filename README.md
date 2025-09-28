@@ -31,3 +31,6 @@ actix has 3 types for controlling concurrency
   - Each `Actor` is bound to one and only one `Arbiter`
 
 ### [Ractor](https://crates.io/crates/ractor)
+
+- cast: 片方向メッセージ送信
+- call: RPC
