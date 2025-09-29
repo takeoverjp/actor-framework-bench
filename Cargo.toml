@@ -7,7 +7,6 @@ edition = "2024"
 actix = "0.13"
 ractor = "0.15.8"
 tokio = { version = "1.47.1", features = ["full"] }
-async-trait = "0.1"
 tracing = { version = "0.1", features = ["attributes"] }
 
 tracing-glog = "0.4"

@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "Actix"
-    ],
-    "editor.formatOnSave": true
+  "cSpell.words": ["Actix", "Ractor"],
+  "editor.formatOnSave": true
 }

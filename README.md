@@ -34,3 +34,14 @@ actix has 3 types for controlling concurrency
 
 - cast: 片方向メッセージ送信
 - call: RPC
+
+
+## Differences
+
+- Timer
+  - Actix: [`actix::AsyncContext::run_interval`](https://docs.rs/actix/latest/actix/prelude/trait.AsyncContext.html#method.run_interval)
+  - Ractor: Not supported. Need to use `tokio::time::interval` and send message to `Actor` periodically.
+
+- Handler
+  - Actix: Need to implement `Handler` trait for each message type.
+  - Ractor: Implement `Actor` trait once, and define message handling in `handle` method.
