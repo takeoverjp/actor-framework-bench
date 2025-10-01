@@ -3,7 +3,6 @@ mod log;
 mod ping_pong;
 mod router;
 
-use heart_beat::HeartBeatActor;
 use ping_pong::PingPong;
 use ractor::Actor;
 use router::RouterActor;
@@ -20,14 +19,6 @@ async fn main() {
         .await
         .expect("Failed to start ping-pong actor");
 
-    let (_actor, heart_beat_actor_handle) = Actor::spawn(None, HeartBeatActor, ())
-        .await
-        .expect("Failed to start heartbeat actor");
-
-    ::tokio::try_join!(
-        router_actor_handle,
-        ping_pong_handle,
-        heart_beat_actor_handle
-    )
-    .expect("Each actor should run without finish");
+    ::tokio::try_join!(router_actor_handle, ping_pong_handle,)
+        .expect("Each actor should run without finish");
 }

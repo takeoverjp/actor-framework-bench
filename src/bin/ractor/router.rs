@@ -1,15 +1,13 @@
+use crate::heart_beat::HeartBeatActor;
 use ractor::Actor;
 use ractor::ActorProcessingErr;
 use ractor::ActorRef;
-use ractor::cast;
 
 #[derive(Debug, Clone)]
 pub struct RouterActor;
 
 #[derive(Debug, Clone)]
-pub enum RouterMessage {
-    Tick,
-}
+pub enum RouterMessage {}
 
 impl Actor for RouterActor {
     type Msg = RouterMessage;
@@ -19,33 +17,27 @@ impl Actor for RouterActor {
 
     async fn pre_start(
         &self,
-        myself: ActorRef<Self::Msg>,
+        _myself: ActorRef<Self::Msg>,
         _: (),
     ) -> Result<Self::State, ActorProcessingErr> {
-        let interval = tokio::time::interval(std::time::Duration::from_secs(1));
-        tokio::spawn(async move {
-            let mut interval = interval;
-            loop {
-                interval.tick().await;
-                if cast!(myself, RouterMessage::Tick).is_err() {
-                    break;
-                }
-            }
-        });
+        let (_actor, _heart_beat_actor_handle) = Actor::spawn(None, HeartBeatActor, ())
+            .await
+            .expect("Failed to start heartbeat actor");
         Ok(())
     }
 
     async fn handle(
         &self,
         _: ActorRef<Self::Msg>,
-        message: Self::Msg,
+        _message: Self::Msg,
         _: &mut Self::State,
     ) -> Result<(), ActorProcessingErr> {
-        match message {
-            RouterMessage::Tick => {
-                tracing::info!("Router");
-            }
-        }
+        // Routing messages
+        // match message {
+        //     RouterMessage::Tick => {
+        //         tracing::info!("Router");
+        //     }
+        // }
         Ok(())
     }
 }
