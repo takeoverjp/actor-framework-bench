@@ -1,7 +1,8 @@
-use ractor::Actor;
-use ractor::ActorProcessingErr;
-use ractor::ActorRef;
-use ractor::cast;
+use crate::router::RouterMessage;
+use ::ractor::Actor;
+use ::ractor::ActorProcessingErr;
+use ::ractor::ActorRef;
+use ::ractor::cast;
 
 #[derive(Debug, Clone)]
 pub struct HeartBeatActor;
@@ -11,23 +12,38 @@ pub enum HeartBeatMessage {
     Tick,
 }
 
+pub struct HeartBeatArguments {
+    router: ActorRef<RouterMessage>,
+}
+
+impl HeartBeatArguments {
+    pub fn new(router: ActorRef<RouterMessage>) -> Self {
+        Self { router }
+    }
+}
+
 impl Actor for HeartBeatActor {
     type Msg = HeartBeatMessage;
 
     type State = ();
-    type Arguments = ();
+    type Arguments = HeartBeatArguments;
 
     async fn pre_start(
         &self,
-        myself: ActorRef<Self::Msg>,
-        _: (),
+        _myself: ActorRef<Self::Msg>,
+        args: Self::Arguments,
     ) -> Result<Self::State, ActorProcessingErr> {
         let interval = tokio::time::interval(std::time::Duration::from_secs(1));
         tokio::spawn(async move {
             let mut interval = interval;
             loop {
                 interval.tick().await;
-                if cast!(myself, HeartBeatMessage::Tick).is_err() {
+                if cast!(
+                    args.router,
+                    RouterMessage::HeartBeat(HeartBeatMessage::Tick)
+                )
+                .is_err()
+                {
                     break;
                 }
             }
@@ -43,7 +59,7 @@ impl Actor for HeartBeatActor {
     ) -> Result<(), ActorProcessingErr> {
         match message {
             HeartBeatMessage::Tick => {
-                tracing::info!("HeartBeat");
+                ::tracing::info!("HeartBeat");
             }
         }
         Ok(())
